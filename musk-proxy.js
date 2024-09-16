@@ -125,7 +125,7 @@ class MuskEmpireAPI {
         const url = "https://api.muskempire.io/pvp/fight";
         const strategies = ['aggressive', 'flexible', 'protective'];
         const strategy = strategies[Math.floor(Math.random() * strategies.length)];
-//      const strategy = "protective";
+        // const strategy = "protective";
         let league;
 
         if (level >= 13 && balance >= 100000000) {
@@ -144,7 +144,7 @@ class MuskEmpireAPI {
             league = 'bronze';
         }
         else {
-            return "Không đủ điều kiện tham gia bất kỳ giải đấu nào.";
+            return "Tidak memenuhi syarat untuk bergabung dengan liga manapun.";
         }
 
         const payload = {
@@ -185,10 +185,10 @@ class MuskEmpireAPI {
             if (response.status === 200) {
                 return response.data.ip;
             } else {
-                throw new Error(`Không thể kiểm tra IP của proxy. Status code: ${response.status}`);
+                throw new Error(`Tidak dapat memeriksa IP proxy. Kode status: ${response.status}`);
             }
         } catch (error) {
-            throw new Error(`Error khi kiểm tra IP của proxy: ${error.message}`);
+            throw new Error(`Kesalahan saat memeriksa IP proxy: ${error.message}`);
         }
     }
 
@@ -211,7 +211,7 @@ class MuskEmpireAPI {
     async waitWithCountdown(seconds) {
         for (let i = seconds; i >= 0; i--) {
             readline.cursorTo(process.stdout, 0);
-            process.stdout.write(`===== Đã hoàn thành tất cả tài khoản, chờ ${i} giây để tiếp tục vòng lặp =====`);
+            process.stdout.write(`===== Telah menyelesaikan semua akun, menunggu ${i} detik untuk melanjutkan siklus =====`);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         console.log('');
@@ -230,15 +230,15 @@ class MuskEmpireAPI {
             .filter(Boolean);
 
         if (initDataList.length !== proxyList.length) {
-            console.error('Số lượng proxy không khớp với số lượng dữ liệu!');
+            console.error('Jumlah proxy tidak sesuai dengan jumlah data!');
             process.exit(1);
         }
 
-        console.log('Tool được chia sẻ miễn phí tại kênh telegram Dân Cày Airdrop @dancayairdrop !');
-        const nangcap = await this.askQuestion('Bạn có muốn nâng cấp kỹ năng không? (y/n): ');
-        const hoinangcap = nangcap.toLowerCase() === 'y';
-        const pvp = await this.askQuestion('Bạn có muốn chơi đàm phán không? (y/n): ');
-        const hoipvp = pvp.toLowerCase() === 'y';
+        console.log('Alat ini dibagikan gratis di saluran telegram Dân Cày Airdrop @dancayairdrop!');
+        const upgradeSkills = await this.askQuestion('Apakah Anda ingin meningkatkan keterampilan? (y/n): ');
+        const upgradeSkillsYes = upgradeSkills.toLowerCase() === 'y';
+        const pvp = await this.askQuestion('Apakah Anda ingin bermain PvP? (y/n): ');
+        const pvpYes = pvp.toLowerCase() === 'y';
 
         while (true) {
             for (let no = 0; no < initDataList.length; no++) {
@@ -252,17 +252,17 @@ class MuskEmpireAPI {
                         await this.processUserData(apiKey, no, proxy);
                         await this.processDailyRewards(apiKey, proxy);
                         await this.processGuiTap(apiKey, proxy);
-                        if (hoipvp) {
+                        if (pvpYes) {
                             await this.processPvP(apiKey, proxy);
                         }
-                        if (hoinangcap) {
+                        if (upgradeSkillsYes) {
                             await this.processSkillUpgrade(apiKey, proxy);
                         }
                     } else {
-                        console.log(`Đăng nhập thất bại cho tài khoản ${no + 1}!`);
+                        console.log(`Gagal login untuk akun ${no + 1}!`);
                     }
                 } catch (error) {
-                    this.log(`Lỗi khi xử lý tài khoản ${no + 1}: ${error.message}`);
+                    this.log(`Kesalahan saat memproses akun ${no + 1}: ${error.message}`);
                 }
             }
             await this.waitWithCountdown(Math.floor(60));
@@ -274,16 +274,16 @@ class MuskEmpireAPI {
             const userData = await this.getUserData(apiKey, proxy);
             const heroData = userData.data.hero;
             const firstName = userData.data.profile.firstName;
-            console.log(`========== Tài khoản ${accountNumber + 1} | ${firstName} | ip: ${await this.checkProxyIP(proxy)} ==========`);
-            this.log(`Balance: ${heroData.money}`);
-            this.log(`Lợi nhuận mỗi giờ: ${heroData.moneyPerHour}`);
+            console.log(`========== Akun ${accountNumber + 1} | ${firstName} | ip: ${await this.checkProxyIP(proxy)} ==========`);
+            this.log(`Saldo: ${heroData.money}`);
+            this.log(`Keuntungan per jam: ${heroData.moneyPerHour}`);
             this.log(`Level: ${heroData.level}`);
             this.log(`EXP: ${heroData.exp}`);
-            this.log(`Energy: ${heroData.earns.task.energy}`);
-            this.log(`PvP Wins: ${heroData.pvpWin}`);
-            this.log(`PvP Losses: ${heroData.pvpLose}`);
+            this.log(`Energi: ${heroData.earns.task.energy}`);
+            this.log(`Kemenangan PvP: ${heroData.pvpWin}`);
+            this.log(`Kekalahan PvP: ${heroData.pvpLose}`);
         } catch (error) {
-            this.log(`Lỗi khi lấy dữ liệu người dùng cho tài khoản ${accountNumber + 1}: ${error.message}`);
+            this.log(`Kesalahan saat mengambil data pengguna untuk akun ${accountNumber + 1}: ${error.message}`);
         }
     }
 
@@ -295,16 +295,16 @@ class MuskEmpireAPI {
             try {
                 const claimResponse = await this.claimDailyReward(apiKey, nextRewardId, proxy);
                 if (claimResponse.success) {
-                    this.log(`Điểm danh thành công ngày ${nextRewardId}`);
+                    this.log(`Absensi berhasil untuk hari ${nextRewardId}`);
                 } else {
-                    this.log(`Điểm danh thất bại ngày ${nextRewardId}`);
+                    this.log(`Absensi gagal untuk hari ${nextRewardId}`);
                 }
             } catch (error) {
-                this.log(`Lỗi khi điểm danh ngày ${nextRewardId}: ${error.message}`);
+                this.log(`Kesalahan saat absensi hari ${nextRewardId}: ${error.message}`);
             }
     
         } catch (error) {
-            this.log(`Lỗi khi xử lý phần thưởng hàng ngày: ${error.message}`);
+            this.log(`Kesalahan saat memproses hadiah harian: ${error.message}`);
         }
     }    
 
@@ -314,14 +314,14 @@ class MuskEmpireAPI {
             const energy = userData.data.hero.earns.task.energy;
             const actionResponse = await this.guiTap(apiKey, energy, 0, proxy);
             if (actionResponse.success) {
-                this.log('Tap thành công!');
+                this.log('Tap berhasil!');
                 const heroData = actionResponse.data.hero;
-                this.log(`Balance: ${heroData.money}`);
+                this.log(`Saldo: ${heroData.money}`);
             } else {
-                this.log('Tap thất bại!');
+                this.log('Tap gagal!');
             }
         } catch (error) {
-            this.log(`Lỗi khi thực hiện tap: ${error.message}`);
+            this.log(`Kesalahan saat melakukan tap: ${error.message}`);
         }
     }
 
@@ -336,21 +336,21 @@ class MuskEmpireAPI {
                         try {
                             const improveResponse = await this.improveSkill(apiKey, skill.key, proxy);
                             if (improveResponse.success) {
-                                this.log(`Nâng cấp kỹ năng ${skill.title} thành công!`);
+                                this.log(`Peningkatan keterampilan ${skill.title} berhasil!`);
                                 money = improveResponse.data.hero.money;
                             } else {
-                                this.log(`Nâng cấp kỹ năng ${skill.title} thất bại!`);
+                                this.log(`Peningkatan keterampilan ${skill.title} gagal!`);
                                 break;
                             }
                         } catch (error) {
-                            this.log(`Lỗi khi nâng cấp kỹ năng ${skill.title}: ${error.message}`);
+                            this.log(`Kesalahan saat meningkatkan keterampilan ${skill.title}: ${error.message}`);
                             break;
                         }
                     }
                 }
             }
         } catch (error) {
-            this.log(`Lỗi khi nâng cấp kỹ năng: ${error.message}`);
+            this.log(`Kesalahan saat meningkatkan keterampilan: ${error.message}`);
         }
     }
 
@@ -366,33 +366,33 @@ class MuskEmpireAPI {
                     const fightResponse = await this.pvpFight(apiKey, level, money, proxy);
                     if (fightResponse.success) {
                         const fightData = fightResponse.data.fight;
-                        this.log(`Bắt đầu đàm phán lần (${i + 1}): League: ${fightData.league}, Chiến lược: ${fightData.player2Strategy}, Hợp đồng: ${fightData.moneyContract}, Tiền lãi: ${fightData.moneyProfit}`);
+                        this.log(`Memulai negosiasi ke (${i + 1}): Liga: ${fightData.league}, Strategi: ${fightData.player2Strategy}, Kontrak: ${fightData.moneyContract}, Keuntungan: ${fightData.moneyProfit}`);
                         if (fightData.winner === id) {
-                            this.log('Win! Yêu cầu phần thưởng...');
+                            this.log('Menang! Mengklaim hadiah...');
                         } else {
-                            this.log('Thua mẹ rồi!');
+                            this.log('Kalah!');
                         }
                         try {
                             const claimResponse = await this.claimFightReward(apiKey, proxy);
                             if (claimResponse.success) {
                                 const claimData = claimResponse.data.fight;
                                 const claimData2 = claimResponse.data.hero;
-                                this.log(`Reward Claimed: Hợp đồng: ${claimData.moneyContract}, Tiền lãi: ${claimData.moneyProfit}, Balance: ${claimData2.money}`);
+                                this.log(`Hadiah Diterima: Kontrak: ${claimData.moneyContract}, Keuntungan: ${claimData.moneyProfit}, Saldo: ${claimData2.money}`);
                             } else {
-                                this.log('Claim Failed');
+                                this.log('Klaim Gagal');
                             }
                         } catch (error) {
-                            this.log(`Lỗi khi yêu cầu phần thưởng PvP: ${error.message}`);
+                            this.log(`Kesalahan saat mengklaim hadiah PvP: ${error.message}`);
                         }
                     } else {
-                        this.log('Không đủ điều kiện cho bất kì cuộc đàm phán nào!');
+                        this.log('Tidak memenuhi syarat untuk negosiasi apapun!');
                     }
                 } catch (error) {
-                    this.log(`Lỗi khi thực hiện PvP lần ${i + 1}: ${error.message}`);
+                    this.log(`Kesalahan saat melakukan PvP ke-${i + 1}: ${error.message}`);
                 }
             }
         } catch (error) {
-            this.log(`Lỗi khi thực hiện PvP: ${error.message}`);
+            this.log(`Kesalahan saat melakukan PvP: ${error.message}`);
         }
     }
 }
